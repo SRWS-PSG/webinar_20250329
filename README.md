@@ -29,7 +29,9 @@
 ```
 webinar_20250329/
 ├── README.md - このファイル
-└── code_examples/ - デモで使用したコード例
+├── code_examples/ - デモで使用したコード例
+└── demo/ - デモンストレーションとドキュメント
+    └── readme_creation_demo/ - README.md作成のデモ
 ```
 
 ## Agent AI の利用目的
