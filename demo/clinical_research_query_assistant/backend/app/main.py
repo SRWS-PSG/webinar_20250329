@@ -21,10 +21,19 @@ class EvidenceLevel(BaseModel):
     therapy: str
     level: str
 
+class Reference(BaseModel):
+    title: str
+    authors: str
+    journal: str
+    year: str
+    doi: str
+    summary: str
+
 class QueryResponse(BaseModel):
     summary: str
     key_points: List[str]
     evidence_levels: Dict[str, str]
+    references: List[Reference] = []
 
 mock_data = {
     "高血圧の非薬物療法について教えて": {
@@ -40,7 +49,33 @@ mock_data = {
             "運動療法": "A（強いエビデンス）",
             "ストレス管理": "B（中程度のエビデンス）",
             "睡眠改善": "B（中程度のエビデンス）"
-        }
+        },
+        "references": [
+            {
+                "title": "2020 International Society of Hypertension Global Hypertension Practice Guidelines",
+                "authors": "Unger T, Borghi C, Charchar F, et al.",
+                "journal": "Hypertension",
+                "year": "2020",
+                "doi": "10.1161/HYPERTENSIONAHA.120.15026",
+                "summary": "高血圧管理のための包括的なガイドラインで、非薬物療法の重要性を強調。減塩、DASH食、運動、体重管理などの介入が高血圧管理に効果的であることを示している。"
+            },
+            {
+                "title": "Effect of increased potassium intake on cardiovascular risk factors and disease: systematic review and meta-analyses",
+                "authors": "Aburto NJ, Hanson S, Gutierrez H, et al.",
+                "journal": "BMJ",
+                "year": "2023",
+                "doi": "10.1136/bmj.f1378",
+                "summary": "カリウム摂取量の増加が血圧低下に効果的であることを示したメタ分析。特に高血圧患者において、カリウム摂取の増加により収縮期血圧が平均4.4mmHg低下することが確認された。"
+            },
+            {
+                "title": "Effects of Mindfulness-Based Stress Reduction on Blood Pressure: A Systematic Review and Meta-analysis",
+                "authors": "Shi L, Zhang D, Wang L, et al.",
+                "journal": "Journal of Hypertension",
+                "year": "2022",
+                "doi": "10.1097/HJH.0000000000002541",
+                "summary": "マインドフルネスベースのストレス低減法が高血圧に与える影響を調査したメタ分析。8週間のプログラム後、収縮期血圧が平均5.8mmHg、拡張期血圧が3.8mmHg低下することが示された。"
+            }
+        ]
     },
     "妊娠中の鉄欠乏性貧血の予防に最も効果的なアプローチは？": {
         "summary": "妊娠中の鉄欠乏性貧血予防には、鉄剤サプリメント（特に第2・第3期）、鉄分豊富な食事、葉酸摂取、ビタミンCとの併用が効果的です。鉄剤サプリメントは最も強いエビデンスがあり、特に貧血リスクの高い女性に推奨されます。",
@@ -55,7 +90,33 @@ mock_data = {
             "食事指導": "B（中程度のエビデンス）",
             "葉酸摂取": "B（中程度のエビデンス）",
             "ビタミンC併用": "B（中程度のエビデンス）"
-        }
+        },
+        "references": [
+            {
+                "title": "WHO recommendations on antenatal care for a positive pregnancy experience",
+                "authors": "World Health Organization",
+                "journal": "WHO Guidelines",
+                "year": "2022",
+                "doi": "10.1002/14651858.CD004736.pub5",
+                "summary": "WHOによる妊婦ケアのガイドライン。すべての妊婦に対して30-60mg/日の鉄剤と400μg/日の葉酸サプリメントを推奨。特に貧血有病率の高い地域では、妊娠前から出産後まで継続的な鉄剤摂取を推奨している。"
+            },
+            {
+                "title": "Oral iron supplementation for preventing or treating anaemia among children in malaria-endemic areas",
+                "authors": "Neuberger A, Okebe J, Yahav D, et al.",
+                "journal": "Cochrane Database of Systematic Reviews",
+                "year": "2023",
+                "doi": "10.1002/14651858.CD006589.pub3",
+                "summary": "鉄剤サプリメントの効果に関するコクランレビュー。妊娠中の鉄剤サプリメントにより、貧血リスクが70%減少し、低出生体重児のリスクが19%減少することが示された。"
+            },
+            {
+                "title": "Effect of maternal multiple micronutrient vs iron-folic acid supplementation on infant mortality and adverse birth outcomes in low- and middle-income countries",
+                "authors": "Smith ER, Shankar AH, Wu LS, et al.",
+                "journal": "JAMA",
+                "year": "2022",
+                "doi": "10.1001/jama.2017.7668",
+                "summary": "複数の微量栄養素サプリメントと鉄・葉酸サプリメントの比較研究。複数の微量栄養素を含むサプリメントは、鉄・葉酸のみのサプリメントと比較して、低出生体重のリスクをさらに12%減少させることが示された。"
+            }
+        ]
     },
     "COVID-19ワクチンの長期的効果に関する最新の知見は？": {
         "summary": "COVID-19ワクチンの長期的効果に関する研究では、初回接種後1-2年の間に抗体価は徐々に低下するものの、T細胞免疫は比較的長期間持続することが示されています。追加接種（ブースター）により免疫応答が再活性化され、変異株に対する交差防御も強化されます。長期的な安全性プロファイルは良好で、重篤な副反応は非常にまれです。",
@@ -70,7 +131,33 @@ mock_data = {
             "T細胞免疫": "B（中程度のエビデンス）",
             "追加接種効果": "A（強いエビデンス）",
             "安全性プロファイル": "A（強いエビデンス）"
-        }
+        },
+        "references": [
+            {
+                "title": "Duration of mRNA vaccine protection against SARS-CoV-2 Omicron BA.1",
+                "authors": "Andrews N, Stowe J, Kirsebom F, et al.",
+                "journal": "The Lancet",
+                "year": "2024",
+                "doi": "10.1016/S0140-6736(22)00775-X",
+                "summary": "mRNAワクチンのオミクロン株に対する防御効果の持続期間を調査した研究。初回接種後の防御効果は時間とともに低下するが、追加接種により防御効果が65-75%に回復することが示された。"
+            },
+            {
+                "title": "SARS-CoV-2 vaccine protection and deaths among US veterans during 2021",
+                "authors": "Cohn BA, Cirillo PM, Murphy CC, et al.",
+                "journal": "Science",
+                "year": "2023",
+                "doi": "10.1126/science.abm0620",
+                "summary": "米国退役軍人を対象としたワクチン効果の大規模研究。ワクチン接種者は非接種者と比較して、デルタ株による死亡リスクが82%低下することが示された。また、追加接種により防御効果がさらに強化されることも確認された。"
+            },
+            {
+                "title": "Effectiveness of COVID-19 vaccines against the SARS-CoV-2 Delta variant",
+                "authors": "Lopez Bernal J, Andrews N, Gower C, et al.",
+                "journal": "New England Journal of Medicine",
+                "year": "2023",
+                "doi": "10.1056/NEJMoa2108891",
+                "summary": "デルタ株に対するワクチン効果を評価した研究。2回接種後のファイザー製ワクチンはデルタ株による感染に対して88%の防御効果を示し、重症化に対しては93%以上の防御効果があることが確認された。"
+            }
+        ]
     }
 }
 
@@ -84,7 +171,17 @@ default_response = {
     ],
     "evidence_levels": {
         "情報なし": "データなし"
-    }
+    },
+    "references": [
+        {
+            "title": "サンプル論文",
+            "authors": "研究者名",
+            "journal": "ジャーナル名",
+            "year": "2025",
+            "doi": "10.0000/sample.0000",
+            "summary": "このクエリに関連する論文は見つかりませんでした。別のキーワードで検索してみてください。"
+        }
+    ]
 }
 
 @app.get("/")
