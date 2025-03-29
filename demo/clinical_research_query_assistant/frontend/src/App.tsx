@@ -48,7 +48,7 @@ function App() {
     setIsLoading(true);
     
     try {
-      const apiUrl = 'http://localhost:8000/api/query';
+      const apiUrl = 'https://clinical-research-query-assistant-jqfubbqj.fly.dev/api/query';
       
       const response = await fetch(apiUrl, {
         method: 'POST',
