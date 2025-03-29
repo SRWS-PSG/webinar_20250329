@@ -2,10 +2,7 @@ import { useState } from 'react'
 import { Search, BookOpen, TrendingUp, BarChart2 } from 'lucide-react'
 import { Button } from './components/ui/button'
 import { Input } from './components/ui/input'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './components/ui/accordion'
 
 const trendData = [
   { year: '2020', value: 10 },
@@ -100,38 +97,57 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex items-center">
-          <BookOpen className="h-8 w-8 text-blue-600 mr-3" />
-          <h1 className="text-2xl font-bold text-gray-900">臨床研究クエリアシスタント</h1>
+    <div className="min-h-screen bg-white">
+      <header className="bg-blue-700 text-white">
+        <div className="max-w-7xl mx-auto py-3 px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <BookOpen className="h-8 w-8 text-white mr-3" />
+              <h1 className="text-2xl font-bold">PubMed</h1>
+            </div>
+            <div className="text-sm">
+              <span className="mr-4">NCBI Resources</span>
+              <span className="mr-4">How To</span>
+              <span>Sign in to NCBI</span>
+            </div>
+          </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <Card className="border-gray-200">
-            <CardHeader>
-              <CardTitle className="text-xl">研究質問を入力してください</CardTitle>
-              <CardDescription>
+      <div className="border-b border-gray-200 bg-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="py-3">
+            <h2 className="text-lg font-medium text-gray-900">臨床研究クエリアシスタント</h2>
+          </div>
+        </div>
+      </div>
+
+      <main className="max-w-7xl mx-auto py-4 sm:px-6 lg:px-8">
+        <div className="px-4 sm:px-0">
+          <div className="bg-white border border-gray-300 rounded-md p-4 mb-6">
+            <div className="mb-3">
+              <h3 className="text-lg font-medium text-gray-900">研究質問を入力してください</h3>
+              <p className="text-sm text-gray-600">
                 自然言語で質問を入力すると、関連する医学文献の要約と主要ポイントが表示されます。
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex space-x-2">
-                <Input
-                  placeholder="例: 高血圧の非薬物療法について教えて"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  className="flex-1"
-                />
-                <Button onClick={handleSearch} disabled={isLoading || !query.trim()}>
-                  {isLoading ? '検索中...' : '検索'}
-                  {!isLoading && <Search className="ml-2 h-4 w-4" />}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+              </p>
+            </div>
+            <div className="flex space-x-2">
+              <Input
+                placeholder="例: 高血圧の非薬物療法について教えて"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="flex-1 border-gray-300"
+              />
+              <Button 
+                onClick={handleSearch} 
+                disabled={isLoading || !query.trim()}
+                className="bg-blue-700 hover:bg-blue-800"
+              >
+                {isLoading ? '検索中...' : '検索'}
+                {!isLoading && <Search className="ml-2 h-4 w-4" />}
+              </Button>
+            </div>
+          </div>
 
           {isLoading && (
             <div className="mt-6 text-center py-12">
@@ -142,34 +158,96 @@ function App() {
 
           {results && !isLoading && (
             <div className="mt-6">
-              <Tabs defaultValue="summary" value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="grid w-full grid-cols-4">
-                  <TabsTrigger value="summary">要約</TabsTrigger>
-                  <TabsTrigger value="keypoints">主要ポイント</TabsTrigger>
-                  <TabsTrigger value="references">参考文献</TabsTrigger>
-                  <TabsTrigger value="visualization">視覚化</TabsTrigger>
-                </TabsList>
+              <div className="bg-blue-50 border-b border-blue-200 p-3 mb-4">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <span className="font-medium text-gray-900">検索結果:</span> <span className="text-blue-700 font-medium">"{query}"</span>
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    <span className="mr-4">表示: 要約</span>
+                    <span>並べ替え: 関連性</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex gap-4">
+                <div className="w-1/4">
+                  <div className="bg-white border border-gray-300 rounded p-4 mb-4">
+                    <h3 className="text-lg font-medium text-gray-900 mb-3">フィルター</h3>
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="font-medium text-gray-700 mb-2">表示タイプ</h4>
+                        <ul className="space-y-2">
+                          <li>
+                            <button 
+                              className={`w-full text-left px-2 py-1 rounded ${activeTab === 'summary' ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'}`}
+                              onClick={() => setActiveTab('summary')}
+                            >
+                              要約
+                            </button>
+                          </li>
+                          <li>
+                            <button 
+                              className={`w-full text-left px-2 py-1 rounded ${activeTab === 'keypoints' ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'}`}
+                              onClick={() => setActiveTab('keypoints')}
+                            >
+                              主要ポイント
+                            </button>
+                          </li>
+                          <li>
+                            <button 
+                              className={`w-full text-left px-2 py-1 rounded ${activeTab === 'references' ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'}`}
+                              onClick={() => setActiveTab('references')}
+                            >
+                              参考文献
+                            </button>
+                          </li>
+                          <li>
+                            <button 
+                              className={`w-full text-left px-2 py-1 rounded ${activeTab === 'visualization' ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'}`}
+                              onClick={() => setActiveTab('visualization')}
+                            >
+                              視覚化
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
+                      
+                      <div>
+                        <h4 className="font-medium text-gray-700 mb-2">エビデンスレベル</h4>
+                        <ul className="space-y-1">
+                          {results.evidenceLevels && Object.entries(results.evidenceLevels).map(([therapy, level], index) => (
+                            <li key={index} className="flex justify-between text-sm">
+                              <span>{therapy}</span>
+                              <span className={`${
+                                level.includes('A') ? 'text-green-700' : 
+                                level.includes('B') ? 'text-blue-700' : 
+                                'text-yellow-700'
+                              }`}>
+                                {level}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 
-                <TabsContent value="summary" className="mt-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>研究結果の要約</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-gray-700">{results.summary}</p>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-                
-                <TabsContent value="keypoints" className="mt-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>主要ポイント</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ul className="space-y-2">
+                <div className="w-3/4">
+                  {activeTab === 'summary' && (
+                    <div className="bg-white border border-gray-300 rounded p-4 mb-4">
+                      <h3 className="text-lg font-medium text-gray-900 mb-3">研究結果の要約</h3>
+                      <p className="text-gray-700 leading-relaxed">{results.summary}</p>
+                    </div>
+                  )}
+                  
+                  {activeTab === 'keypoints' && (
+                    <div className="bg-white border border-gray-300 rounded p-4 mb-4">
+                      <h3 className="text-lg font-medium text-gray-900 mb-3">主要ポイント</h3>
+                      <ul className="space-y-3">
                         {results.keyPoints.map((point, index) => (
-                          <li key={index} className="flex items-start">
+                          <li key={index} className="flex items-start pb-3 border-b border-gray-100 last:border-0">
                             <span className="flex-shrink-0 h-5 w-5 rounded-full bg-blue-100 flex items-center justify-center mr-2 mt-0.5">
                               <span className="text-blue-600 text-xs font-medium">{index + 1}</span>
                             </span>
@@ -177,77 +255,40 @@ function App() {
                           </li>
                         ))}
                       </ul>
-                      
-                      <div className="mt-6">
-                        <h4 className="font-medium text-gray-900 mb-3">エビデンスレベル</h4>
-                        <div className="space-y-2">
-                          {Object.entries(results.evidenceLevels).map(([therapy, level], index) => (
-                            <div key={index} className="flex justify-between items-center">
-                              <span className="text-gray-700">{therapy}</span>
-                              <span className={`px-2 py-1 rounded text-xs font-medium ${
-                                level.includes('A') ? 'bg-green-100 text-green-800' : 
-                                level.includes('B') ? 'bg-blue-100 text-blue-800' : 
-                                'bg-yellow-100 text-yellow-800'
-                              }`}>
-                                {level}
+                    </div>
+                  )}
+                  
+                  {activeTab === 'references' && (
+                    <div className="bg-white border border-gray-300 rounded p-4 mb-4">
+                      <h3 className="text-lg font-medium text-gray-900 mb-3">参考文献</h3>
+                      <div className="space-y-4">
+                        {results.references && results.references.map((reference, index) => (
+                          <div key={index} className="pb-4 border-b border-gray-200 last:border-0">
+                            <h4 className="font-medium text-blue-700 hover:underline cursor-pointer mb-1">{reference.title}</h4>
+                            <p className="text-sm text-gray-600 mb-2">{reference.authors} · {reference.journal} · {reference.year}</p>
+                            <p className="text-sm text-gray-700">{reference.summary}</p>
+                            <div className="mt-2 flex items-center text-xs text-gray-500">
+                              <span className="mr-3">DOI: {reference.doi}</span>
+                              <span className="flex items-center text-blue-600 cursor-pointer">
+                                <Search className="h-3 w-3 mr-1" /> 全文を表示
                               </span>
                             </div>
-                          ))}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-                
-                <TabsContent value="references" className="mt-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>参考文献</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <Accordion type="single" collapsible className="w-full">
-                        {results.references && results.references.map((reference, index) => (
-                          <AccordionItem key={index} value={`item-${index}`}>
-                            <AccordionTrigger className="text-left">
-                              <div>
-                                <div className="font-medium">{reference.title}</div>
-                                <div className="text-sm text-gray-500">{reference.authors} ({reference.year})</div>
-                              </div>
-                            </AccordionTrigger>
-                            <AccordionContent>
-                              <div className="space-y-2 pt-2">
-                                <div>
-                                  <span className="font-medium">掲載誌:</span> {reference.journal}
-                                </div>
-                                <div>
-                                  <span className="font-medium">DOI:</span> {reference.doi}
-                                </div>
-                                <div className="mt-3">
-                                  <span className="font-medium">要約:</span>
-                                  <p className="mt-1 text-gray-700">{reference.summary}</p>
-                                </div>
-                              </div>
-                            </AccordionContent>
-                          </AccordionItem>
+                          </div>
                         ))}
-                      </Accordion>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-                
-                <TabsContent value="visualization" className="mt-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>データの視覚化</CardTitle>
-                    </CardHeader>
-                    <CardContent>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {activeTab === 'visualization' && (
+                    <div className="bg-white border border-gray-300 rounded p-4 mb-4">
+                      <h3 className="text-lg font-medium text-gray-900 mb-3">データの視覚化</h3>
                       <div className="space-y-8">
                         <div>
                           <h4 className="font-medium text-gray-900 mb-3 flex items-center">
                             <TrendingUp className="h-5 w-5 mr-2 text-blue-600" />
                             研究トレンド (2020-2025)
                           </h4>
-                          <div className="h-72">
+                          <div className="h-72 border border-gray-200 p-2 rounded">
                             <ResponsiveContainer width="100%" height="100%">
                               <LineChart data={trendData}>
                                 <CartesianGrid strokeDasharray="3 3" />
@@ -266,7 +307,7 @@ function App() {
                             <BarChart2 className="h-5 w-5 mr-2 text-blue-600" />
                             治療法の効果比較
                           </h4>
-                          <div className="h-72">
+                          <div className="h-72 border border-gray-200 p-2 rounded">
                             <ResponsiveContainer width="100%" height="100%">
                               <BarChart data={comparisonData}>
                                 <CartesianGrid strokeDasharray="3 3" />
@@ -280,52 +321,48 @@ function App() {
                           </div>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-              </Tabs>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           )}
           
-          <Card className="mt-6 border-gray-200 bg-blue-50">
-            <CardHeader>
-              <CardTitle className="text-lg">デモシナリオ</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-start text-left font-normal"
-                  onClick={() => {
-                    setQuery('高血圧の非薬物療法について教えて');
-                    handleSearch();
-                  }}
-                >
-                  シナリオ1: 「高血圧の非薬物療法について教えて」
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-start text-left font-normal"
-                  onClick={() => {
-                    setQuery('妊娠中の鉄欠乏性貧血の予防に最も効果的なアプローチは？');
-                    handleSearch();
-                  }}
-                >
-                  シナリオ2: 「妊娠中の鉄欠乏性貧血の予防に最も効果的なアプローチは？」
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-start text-left font-normal"
-                  onClick={() => {
-                    setQuery('COVID-19ワクチンの長期的効果に関する最新の知見は？');
-                    handleSearch();
-                  }}
-                >
-                  シナリオ3: 「COVID-19ワクチンの長期的効果に関する最新の知見は？」
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="bg-white border border-gray-300 rounded-md p-4 mt-6">
+            <h3 className="text-lg font-medium text-gray-900 mb-3">デモシナリオ</h3>
+            <div className="space-y-3">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start text-left font-normal border-gray-300 hover:bg-blue-50"
+                onClick={() => {
+                  setQuery('高血圧の非薬物療法について教えて');
+                  handleSearch();
+                }}
+              >
+                シナリオ1: 「高血圧の非薬物療法について教えて」
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start text-left font-normal border-gray-300 hover:bg-blue-50"
+                onClick={() => {
+                  setQuery('妊娠中の鉄欠乏性貧血の予防に最も効果的なアプローチは？');
+                  handleSearch();
+                }}
+              >
+                シナリオ2: 「妊娠中の鉄欠乏性貧血の予防に最も効果的なアプローチは？」
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start text-left font-normal border-gray-300 hover:bg-blue-50"
+                onClick={() => {
+                  setQuery('COVID-19ワクチンの長期的効果に関する最新の知見は？');
+                  handleSearch();
+                }}
+              >
+                シナリオ3: 「COVID-19ワクチンの長期的効果に関する最新の知見は？」
+              </Button>
+            </div>
+          </div>
         </div>
       </main>
     </div>
