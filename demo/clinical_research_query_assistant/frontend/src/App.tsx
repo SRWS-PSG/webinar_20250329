@@ -5,6 +5,7 @@ import { Input } from './components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './components/ui/accordion'
 
 const trendData = [
   { year: '2020', value: 10 },
@@ -35,7 +36,25 @@ const mockResults = {
     "運動療法": "A（強いエビデンス）",
     "ストレス管理": "B（中程度のエビデンス）",
     "睡眠改善": "B（中程度のエビデンス）"
-  }
+  },
+  references: [
+    {
+      title: "2020 International Society of Hypertension Global Hypertension Practice Guidelines",
+      authors: "Unger T, Borghi C, Charchar F, et al.",
+      journal: "Hypertension",
+      year: "2020",
+      doi: "10.1161/HYPERTENSIONAHA.120.15026",
+      summary: "高血圧管理のための包括的なガイドラインで、非薬物療法の重要性を強調。減塩、DASH食、運動、体重管理などの介入が高血圧管理に効果的であることを示している。"
+    },
+    {
+      title: "Effect of increased potassium intake on cardiovascular risk factors and disease: systematic review and meta-analyses",
+      authors: "Aburto NJ, Hanson S, Gutierrez H, et al.",
+      journal: "BMJ",
+      year: "2023",
+      doi: "10.1136/bmj.f1378",
+      summary: "カリウム摂取量の増加が血圧低下に効果的であることを示したメタ分析。特に高血圧患者において、カリウム摂取の増加により収縮期血圧が平均4.4mmHg低下することが確認された。"
+    }
+  ]
 };
 
 function App() {
@@ -67,7 +86,8 @@ function App() {
       const formattedResults = {
         summary: data.summary,
         keyPoints: data.key_points,
-        evidenceLevels: data.evidence_levels
+        evidenceLevels: data.evidence_levels,
+        references: data.references || []
       };
       
       setResults(formattedResults);
@@ -123,9 +143,10 @@ function App() {
           {results && !isLoading && (
             <div className="mt-6">
               <Tabs defaultValue="summary" value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="grid w-full grid-cols-3">
+                <TabsList className="grid w-full grid-cols-4">
                   <TabsTrigger value="summary">要約</TabsTrigger>
                   <TabsTrigger value="keypoints">主要ポイント</TabsTrigger>
+                  <TabsTrigger value="references">参考文献</TabsTrigger>
                   <TabsTrigger value="visualization">視覚化</TabsTrigger>
                 </TabsList>
                 
@@ -174,6 +195,42 @@ function App() {
                           ))}
                         </div>
                       </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+                
+                <TabsContent value="references" className="mt-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>参考文献</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <Accordion type="single" collapsible className="w-full">
+                        {results.references && results.references.map((reference, index) => (
+                          <AccordionItem key={index} value={`item-${index}`}>
+                            <AccordionTrigger className="text-left">
+                              <div>
+                                <div className="font-medium">{reference.title}</div>
+                                <div className="text-sm text-gray-500">{reference.authors} ({reference.year})</div>
+                              </div>
+                            </AccordionTrigger>
+                            <AccordionContent>
+                              <div className="space-y-2 pt-2">
+                                <div>
+                                  <span className="font-medium">掲載誌:</span> {reference.journal}
+                                </div>
+                                <div>
+                                  <span className="font-medium">DOI:</span> {reference.doi}
+                                </div>
+                                <div className="mt-3">
+                                  <span className="font-medium">要約:</span>
+                                  <p className="mt-1 text-gray-700">{reference.summary}</p>
+                                </div>
+                              </div>
+                            </AccordionContent>
+                          </AccordionItem>
+                        ))}
+                      </Accordion>
                     </CardContent>
                   </Card>
                 </TabsContent>
